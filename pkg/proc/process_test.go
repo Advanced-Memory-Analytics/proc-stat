@@ -7,8 +7,8 @@ import (
     "testing"
 )
 
-func TestProcess(test *testing.T) {
-	procs, err := Processes()
+func TestPSEF(test *testing.T) {
+	procs, err := PSEF()
 	if err != nil {
 		test.Fatal(err)
 	}
@@ -25,7 +25,7 @@ func TestProcess(test *testing.T) {
 	}
 }
 
-func TestProcessWithNameFlag(test *testing.T) {
+func TestPSEFWithNameFlag(test *testing.T) {
 	testDir := _test.GetTestDir()
 	cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test1")
 	cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test2")
@@ -35,7 +35,7 @@ func TestProcessWithNameFlag(test *testing.T) {
 	go cmd1.Run()
 	go cmd2.Run()
 
-	procs, err := Processes()
+	procs, err := PSEF()
 	if err != nil {
 		test.Fatal(err)
 	}

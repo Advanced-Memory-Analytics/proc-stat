@@ -20,7 +20,7 @@ type Proc struct {
 	name  string
 }
 
-func Processes() ([]*Proc, error) {
+func PSEF() ([]*Proc, error) {
 	processes := make([]*Proc, 0)
 
 	ps := exec.Command("ps", "-ef")
