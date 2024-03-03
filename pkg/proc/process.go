@@ -20,7 +20,7 @@ type Proc struct {
 	name  string
 }
 
-func Processes() ([]*Proc, error) {
+func Processes(filter ...string) ([]*Proc, error) {
 	processes := make([]*Proc, 0)
 
 	ps := exec.Command("ps", "-ef")
@@ -68,4 +68,13 @@ func Processes() ([]*Proc, error) {
 	}
 
 	return processes, nil
+}
+
+func filter(orig []string, filter string) (result []string) {
+    for _, line := range orig {
+        if strings.Contains(line, filter) {
+            result = append(result, line)
+        }
+    }
+    return result
 }
