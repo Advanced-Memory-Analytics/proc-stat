@@ -17,6 +17,7 @@ type Proc struct {
 	time  string
 	cmd   string
     args  string
+    name  string
 }
 
 func Processes() ([]*Proc, error) {
@@ -31,6 +32,10 @@ func Processes() ([]*Proc, error) {
 	lines := strings.Split(string(out), "\n")
 
 	for _, process := range lines {
+        if len(process) == 0 {
+            continue
+        }
+
         proc := &Proc{}
         var cols []string
 
@@ -48,6 +53,17 @@ func Processes() ([]*Proc, error) {
         proc.time = cols[6]
         proc.cmd = cols[7]
         proc.args = strings.Join(cols[8:], " ")
+
+        if strings.Contains(proc.args, "-name") {
+            indexOfArg := strings.Index(proc.args, "-name")
+            indexOfName := indexOfArg + len("-name")
+            endOfName := strings.Index(proc.args[indexOfName:], " ")
+            if endOfName == -1 {
+                proc.name = proc.args[indexOfName:]
+            } else {
+                proc.name = proc.args[indexOfName: indexOfName + endOfName]
+            }
+        }
 
         processes = append(processes, proc)
 	}
