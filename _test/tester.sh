@@ -1,6 +1,6 @@
 #!/bin/bash
 function main() {
-    sleep 10
+    sleep 1
     echo "done"
 }
 
