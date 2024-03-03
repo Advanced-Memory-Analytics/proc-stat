@@ -33,10 +33,12 @@ func Processes(filter ...string) ([]*Proc, error) {
 	for _, process := range lines {
         //proc := &Proc{}
         var cols []string
+        args := ""
         process = strings.Join(strings.Fields(strings.TrimSpace(process)), " ")
         argIndex := strings.Index(process, "-")
         if argIndex != -1 {
             cols = strings.Split(process[:argIndex], " ")
+            args = process[argIndex:]
         } else {
             cols = strings.Split(process, " ")
         }
