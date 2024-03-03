@@ -1,2 +1,2 @@
 # proc-stat
-Go utility for getting process status info
+Lightweight Go utility that utilizes `ps -ef` command to get process status information.
