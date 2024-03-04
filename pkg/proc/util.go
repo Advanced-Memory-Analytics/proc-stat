@@ -26,9 +26,9 @@ func (this *Proc) parse(args []string) {
                     continue
                 }
             }
-            this.Args[arg] = true
+            this.Args[arg] = "true"
         } else {
-            this.Args[arg] = true
+            this.Args[arg] = "true"
         }
     }
 }

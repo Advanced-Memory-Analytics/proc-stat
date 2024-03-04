@@ -16,7 +16,7 @@ type Proc struct {
 	Tty   string
 	Time  string
 	Cmd   string
-	Args  map[string]any
+	Args  map[string]string
 }
 
 func PSEF() ([]*Proc, error) {
@@ -36,7 +36,7 @@ func PSEF() ([]*Proc, error) {
 		}
 
 		proc := &Proc{}
-        proc.Args = make(map[string]any, 0)
+        proc.Args = make(map[string]string, 0)
 		var cols []string
 
 		process = strings.Join(strings.Fields(strings.TrimSpace(process)), " ")
