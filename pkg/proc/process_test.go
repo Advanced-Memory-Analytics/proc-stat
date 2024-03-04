@@ -1,10 +1,10 @@
 package proc
 
 import (
-    "github.com/Advanced-Memory-Analytics/proc-stat/_test"
-    "os"
-    "os/exec"
-    "testing"
+	"github.com/Advanced-Memory-Analytics/proc-stat/_test"
+	"os"
+	"os/exec"
+	"testing"
 )
 
 func TestPSEF(test *testing.T) {
@@ -14,21 +14,21 @@ func TestPSEF(test *testing.T) {
 	}
 
 	for i, proc := range procs {
-		process, err := os.FindProcess(proc.pid)
+		process, err := os.FindProcess(proc.Pid)
 		if err != nil {
-			test.Errorf("Case: %d, Failed to find process with pid: %d, Error: %v", i, proc.pid, err)
+			test.Errorf("Case: %d, Failed to find process with Pid: %d, Error: %v", i, proc.Pid, err)
 		}
 
-		if process.Pid != proc.pid {
-			test.Errorf("Case: %d, Actual PID: %d, Expected PID: %d", i, process.Pid, proc.pid)
+		if process.Pid != proc.Pid {
+			test.Errorf("Case: %d, Actual PID: %d, Expected PID: %d", i, process.Pid, proc.Pid)
 		}
 	}
 }
 
 func TestPSEFWithNameFlag(test *testing.T) {
 	testDir := _test.GetTestDir()
-	cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test1")
-	cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test2")
+	cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-Name test1")
+	cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-Name test2")
 	foundName1 := false
 	foundName2 := false
 
@@ -41,20 +41,20 @@ func TestPSEFWithNameFlag(test *testing.T) {
 	}
 
 	for i, proc := range procs {
-		process, err := os.FindProcess(proc.pid)
+		process, err := os.FindProcess(proc.Pid)
 		if err != nil {
-			test.Errorf("Case: %d, Failed to find process with pid: %d, Error: %v", i, proc.pid, err)
+			test.Errorf("Case: %d, Failed to find process with Pid: %d, Error: %v", i, proc.Pid, err)
 		}
 
-		if process.Pid != proc.pid {
-			test.Errorf("Case: %d, Actual PID: %d, Expected PID: %d", i, process.Pid, proc.pid)
+		if process.Pid != proc.Pid {
+			test.Errorf("Case: %d, Actual PID: %d, Expected PID: %d", i, process.Pid, proc.Pid)
 		}
 
-		if proc.name == "test1" {
+		if proc.Name == "test1" {
 			foundName1 = true
 		}
 
-		if proc.name == "test2" {
+		if proc.Name == "test2" {
 			foundName2 = true
 		}
 

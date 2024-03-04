@@ -8,16 +8,16 @@ import (
 )
 
 type Proc struct {
-	uid   string
-	pid   int
-	ppid  int
-	c     int
-	stime string
-	tty   string
-	time  string
-	cmd   string
-	args  string
-	name  string
+	Uid   string
+	Pid   int
+	Ppid  int
+	C     int
+	Stime string
+	Tty   string
+	Time  string
+	Cmd   string
+	Args  string
+	Name  string
 }
 
 func PSEF() ([]*Proc, error) {
@@ -43,24 +43,24 @@ func PSEF() ([]*Proc, error) {
 
 		cols = strings.Split(process, " ")
 
-		proc.uid = cols[0]
-		proc.pid, _ = strconv.Atoi(cols[1])
-		proc.ppid, _ = strconv.Atoi(cols[2])
-		proc.c, _ = strconv.Atoi(cols[3])
-		proc.stime = cols[4]
-		proc.tty = cols[5]
-		proc.time = cols[6]
-		proc.cmd = cols[7]
-		proc.args = strings.Join(cols[8:], " ")
+		proc.Uid = cols[0]
+		proc.Pid, _ = strconv.Atoi(cols[1])
+		proc.Ppid, _ = strconv.Atoi(cols[2])
+		proc.C, _ = strconv.Atoi(cols[3])
+		proc.Stime = cols[4]
+		proc.Tty = cols[5]
+		proc.Time = cols[6]
+		proc.Cmd = cols[7]
+		proc.Args = strings.Join(cols[8:], " ")
 
-		if strings.Contains(proc.args, "-name") {
-			indexOfArg := strings.Index(proc.args, "-name")
-			indexOfName := indexOfArg + len("-name ")
-			endOfName := strings.Index(proc.args[indexOfName:], " ")
+		if strings.Contains(proc.Args, "-Name") {
+			indexOfArg := strings.Index(proc.Args, "-Name")
+			indexOfName := indexOfArg + len("-Name ")
+			endOfName := strings.Index(proc.Args[indexOfName:], " ")
 			if endOfName == -1 {
-				proc.name = proc.args[indexOfName:]
+				proc.Name = proc.Args[indexOfName:]
 			} else {
-				proc.name = proc.args[indexOfName : indexOfName+endOfName]
+				proc.Name = proc.Args[indexOfName : indexOfName+endOfName]
 			}
 		}
 
