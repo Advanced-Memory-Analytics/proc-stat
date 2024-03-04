@@ -53,9 +53,9 @@ func PSEF() ([]*Proc, error) {
 		proc.Cmd = cols[7]
 		proc.Args = strings.Join(cols[8:], " ")
 
-		if strings.Contains(proc.Args, "-Name") {
-			indexOfArg := strings.Index(proc.Args, "-Name")
-			indexOfName := indexOfArg + len("-Name ")
+		if strings.Contains(proc.Args, "-name") {
+			indexOfArg := strings.Index(proc.Args, "-name")
+			indexOfName := indexOfArg + len("-name ")
 			endOfName := strings.Index(proc.Args[indexOfName:], " ")
 			if endOfName == -1 {
 				proc.Name = proc.Args[indexOfName:]

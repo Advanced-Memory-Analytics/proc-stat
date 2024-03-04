@@ -27,8 +27,8 @@ func TestPSEF(test *testing.T) {
 
 func TestPSEFWithNameFlag(test *testing.T) {
 	testDir := _test.GetTestDir()
-	cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-Name test1")
-	cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-Name test2")
+	cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test1")
+	cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test2")
 	foundName1 := false
 	foundName2 := false
 
