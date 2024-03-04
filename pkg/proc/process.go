@@ -36,7 +36,7 @@ func PSEF() ([]*Proc, error) {
 		}
 
 		proc := &Proc{}
-        proc.Args = make(map[string]string, 0)
+		proc.Args = make(map[string]string, 0)
 		var cols []string
 
 		process = strings.Join(strings.Fields(strings.TrimSpace(process)), " ")
@@ -53,7 +53,7 @@ func PSEF() ([]*Proc, error) {
 		proc.Cmd = cols[7]
 		args := cols[8:]
 
-        proc.parse(args)
+		proc.parse(args)
 
 		processes = append(processes, proc)
 	}
