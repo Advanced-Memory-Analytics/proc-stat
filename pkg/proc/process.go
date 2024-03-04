@@ -53,34 +53,7 @@ func PSEF() ([]*Proc, error) {
 		proc.Cmd = cols[7]
 		args := cols[8:]
 
-        skip := false
-        for i, arg := range args {
-            if skip {
-                continue
-            }
-            if strings.Contains(arg,"-") || strings.Contains(arg,"--") {
-                arg = strings.TrimPrefix(arg, "-")
-                arg = strings.TrimPrefix(arg, "-")
-
-                if strings.Contains(arg, "=") {
-                    split := strings.Split(arg, "=")
-                    proc.Args[split[0]] = split[1]
-                    continue
-                }
-
-                if i < len(args) - 1 {
-                    if !strings.Contains(args[i + 1], "-") && !strings.Contains(args[i + 1], "--") {
-                        proc.Args[arg] = args[i + 1]
-                        skip = true
-                        continue
-                    }
-                }
-                proc.Args[arg] = true
-                skip = false
-            } else {
-                proc.Args[arg] = true
-            }
-        }
+        proc.parse(args)
 
 		processes = append(processes, proc)
 	}
