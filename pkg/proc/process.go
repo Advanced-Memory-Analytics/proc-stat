@@ -16,8 +16,7 @@ type Proc struct {
 	Tty   string
 	Time  string
 	Cmd   string
-	Args  string
-	Name  string
+	Args  map[string]any
 }
 
 func PSEF() ([]*Proc, error) {
@@ -37,6 +36,7 @@ func PSEF() ([]*Proc, error) {
 		}
 
 		proc := &Proc{}
+        proc.Args = make(map[string]any, 0)
 		var cols []string
 
 		process = strings.Join(strings.Fields(strings.TrimSpace(process)), " ")
@@ -51,18 +51,36 @@ func PSEF() ([]*Proc, error) {
 		proc.Tty = cols[5]
 		proc.Time = cols[6]
 		proc.Cmd = cols[7]
-		proc.Args = strings.Join(cols[8:], " ")
+		args := cols[8:]
 
-		if strings.Contains(proc.Args, "-name") {
-			indexOfArg := strings.Index(proc.Args, "-name")
-			indexOfName := indexOfArg + len("-name ")
-			endOfName := strings.Index(proc.Args[indexOfName:], " ")
-			if endOfName == -1 {
-				proc.Name = proc.Args[indexOfName:]
-			} else {
-				proc.Name = proc.Args[indexOfName : indexOfName+endOfName]
-			}
-		}
+        skip := false
+        for i, arg := range args {
+            if skip {
+                continue
+            }
+            if strings.Contains(arg,"-") || strings.Contains(arg,"--") {
+                arg = strings.TrimPrefix(arg, "-")
+                arg = strings.TrimPrefix(arg, "-")
+
+                if strings.Contains(arg, "=") {
+                    split := strings.Split(arg, "=")
+                    proc.Args[split[0]] = split[1]
+                    continue
+                }
+
+                if i < len(args) - 1 {
+                    if !strings.Contains(args[i + 1], "-") && !strings.Contains(args[i + 1], "--") {
+                        proc.Args[arg] = args[i + 1]
+                        skip = true
+                        continue
+                    }
+                }
+                proc.Args[arg] = true
+                skip = false
+            } else {
+                proc.Args[arg] = true
+            }
+        }
 
 		processes = append(processes, proc)
 	}

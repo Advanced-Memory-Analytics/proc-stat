@@ -50,11 +50,11 @@ func TestPSEFWithNameFlag(test *testing.T) {
 			test.Errorf("Case: %d, Actual PID: %d, Expected PID: %d", i, process.Pid, proc.Pid)
 		}
 
-		if proc.Name == "test1" {
+		if proc.Args["name"] == "test1" {
 			foundName1 = true
 		}
 
-		if proc.Name == "test2" {
+		if proc.Args["name"] == "test2" {
 			foundName2 = true
 		}
 
