@@ -61,7 +61,7 @@ func PSEF() ([]*Proc, error) {
 	return processes, nil
 }
 
-func FindChildren(procs []Proc) map[int][]Proc {
+func FindChildren(procs []*Proc) map[int][]*Proc {
     children := make(map[int][]*Proc)
     for _, proc := range procs {
         // Append the proc to the slice in the map keyed by the parent PID
