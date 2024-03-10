@@ -1,10 +1,21 @@
 package proc
 
-import "strings"
+import (
+	"strings"
+)
 
-func (this *Proc) parse(args []string) {
+func (this *Proc) parse(args []string, filters []string) {
+
 	skip := false
 	for i, arg := range args {
+		for _, filter := range filters {
+			if strings.Contains(arg, filter) {
+				skip = false
+				break
+			}
+			skip = true
+		}
+
 		if skip {
 			skip = false
 			continue
