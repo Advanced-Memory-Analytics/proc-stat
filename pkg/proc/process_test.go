@@ -1,12 +1,12 @@
 package proc
 
 import (
-    "fmt"
-    "github.com/Advanced-Memory-Analytics/proc-stat/_test"
-    "os"
-    "os/exec"
-    "strings"
-    "testing"
+	"fmt"
+	"github.com/Advanced-Memory-Analytics/proc-stat/_test"
+	"os"
+	"os/exec"
+	"strings"
+	"testing"
 )
 
 func TestPSEF(test *testing.T) {
@@ -34,11 +34,11 @@ func TestPSEFWithNameFlag(test *testing.T) {
 	foundName1 := false
 	foundName2 := false
 
-    go cmd1.Run()
+	go cmd1.Run()
 	go cmd2.Run()
 
-    defer cmd1.Wait()
-    defer cmd2.Wait()
+	defer cmd1.Wait()
+	defer cmd2.Wait()
 
 	procs, err := PSEF("")
 	if err != nil {
@@ -89,55 +89,55 @@ func TestParseArgs(test *testing.T) {
 }
 
 func TestPSEFWithFilter(test *testing.T) {
-    testDir := _test.GetTestDir()
-    cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-uuid b329c3cb-872b-4762-a2b9-ba0d401907d6 -name guest=b329c3cb-872b-4762-a2b9-ba0d401907d6,debug-threads=on -junk -moreJunk thisshouldnotshowup")
-    cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test2 -junk -moreJunk thisshouldnotshowup")
+	testDir := _test.GetTestDir()
+	cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-uuid b329c3cb-872b-4762-a2b9-ba0d401907d6 -name guest=b329c3cb-872b-4762-a2b9-ba0d401907d6,debug-threads=on -junk -moreJunk thisshouldnotshowup")
+	cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test2 -junk -moreJunk thisshouldnotshowup")
 
-    expectedLongName := "guest=b329c3cb-872b-4762-a2b9-ba0d401907d6,debug-threads=on"
-    expectedShortName := "test2"
-    expectedUUID := "b329c3cb-872b-4762-a2b9-ba0d401907d6"
+	expectedLongName := "guest=b329c3cb-872b-4762-a2b9-ba0d401907d6,debug-threads=on"
+	expectedShortName := "test2"
+	expectedUUID := "b329c3cb-872b-4762-a2b9-ba0d401907d6"
 
-    go cmd1.Run()
-    go cmd2.Run()
+	go cmd1.Run()
+	go cmd2.Run()
 
-    defer cmd1.Wait()
-    defer cmd2.Wait()
+	defer cmd1.Wait()
+	defer cmd2.Wait()
 
-    procs, err := PSEF("bash", "name", "uuid", "test.sh")
-    if err != nil {
-        test.Fatal(err)
-    }
+	procs, err := PSEF("bash", "name", "uuid", "test.sh")
+	if err != nil {
+		test.Fatal(err)
+	}
 
-    // Remove testing script if used.
-    for i, proc := range procs {
-        if proc.Args["./test.sh"] != "" {
-            procs = append(procs[:i], procs[i+1:]...)
-        }
-    }
+	// Remove testing script if used.
+	for i, proc := range procs {
+		if proc.Args["./test.sh"] != "" {
+			procs = append(procs[:i], procs[i+1:]...)
+		}
+	}
 
-    if len(procs) != 2 {
-        for _, proc := range procs {
-            fmt.Printf("%v\n", proc)
-        }
-        test.Fatalf("Failed to filter processes")
-    }
+	if len(procs) != 2 {
+		for _, proc := range procs {
+			fmt.Printf("%v\n", proc)
+		}
+		test.Fatalf("Failed to filter processes")
+	}
 
-    for _, proc := range procs {
-        uuid := proc.Args["uuid"]
-        name := proc.Args["name"]
+	for _, proc := range procs {
+		uuid := proc.Args["uuid"]
+		name := proc.Args["name"]
 
-        if name != expectedLongName {
-            if name == expectedShortName {
-                if uuid != "" {
-                    test.Errorf("Shouldn't have UUID for: %s", name)
-                }
-            } else {
-                test.Errorf("Expected name: %s, Actual name: %s", expectedShortName, name)
-            }
-        } else {
-            if uuid != expectedUUID {
-                test.Errorf("Expected UUID: %s, Actual UUID: %s", expectedUUID, uuid)
-            }
-        }
-    }
+		if name != expectedLongName {
+			if name == expectedShortName {
+				if uuid != "" {
+					test.Errorf("Shouldn't have UUID for: %s", name)
+				}
+			} else {
+				test.Errorf("Expected name: %s, Actual name: %s", expectedShortName, name)
+			}
+		} else {
+			if uuid != expectedUUID {
+				test.Errorf("Expected UUID: %s, Actual UUID: %s", expectedUUID, uuid)
+			}
+		}
+	}
 }

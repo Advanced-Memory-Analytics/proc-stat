@@ -53,9 +53,9 @@ func PSEF(cmd string, argFilters ...string) ([]*Proc, error) {
 		proc.Cmd = cols[7]
 		args := cols[8:]
 
-        if !strings.Contains(proc.Cmd, cmd) {
-            continue
-        }
+		if !strings.Contains(proc.Cmd, cmd) {
+			continue
+		}
 
 		proc.parse(args, argFilters)
 
