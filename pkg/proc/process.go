@@ -1,4 +1,4 @@
-package prc
+package proc
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ type Proc struct {
 	Args  map[string]string
 }
 
-func PSEF(cmd string, argFilters ...string) ([]*Proc, error) {
+func PSEF(cmd string, argFilters ...string) ([]*Proc, map[int][]*Proc, error) {
 	processes := make([]*Proc, 0)
 	children := make(map[int][]*Proc)
 
@@ -28,7 +28,7 @@ func PSEF(cmd string, argFilters ...string) ([]*Proc, error) {
 	ps := exec.Command("ps", "-ef")
 	out, err := ps.Output()
 	if err != nil {
-		return nil, fmt.Errorf("Failed to get output of command: %v with error: %v", ps, err)
+		return nil, nil, fmt.Errorf("Failed to get output of command: %v with error: %v", ps, err)
 	}
 
 	lines := strings.Split(string(out), "\n")
