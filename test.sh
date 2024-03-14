@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Acknowledgement: https://github.com/edulinq/autograder-server/blob/main/test.sh
 # Get directory of this script
 readonly THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 

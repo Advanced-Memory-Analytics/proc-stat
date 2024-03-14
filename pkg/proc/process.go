@@ -19,8 +19,13 @@ type Proc struct {
 	Cmd   string
 	Args  map[string]string
 }
+<<<<<<< HEAD
 0
 func PSEF() ([]*Proc, map[int][]*Proc, error) {
+=======
+
+func PSEF(cmd string, argFilters ...string) ([]*Proc, error) {
+>>>>>>> main
 	processes := make([]*Proc, 0)
 
 	ps := exec.Command("ps", "-ef")
@@ -55,7 +60,11 @@ func PSEF() ([]*Proc, map[int][]*Proc, error) {
 		proc.Cmd = cols[7]
 		args := cols[8:]
 
-		proc.parse(args)
+		if !strings.Contains(proc.Cmd, cmd) {
+			continue
+		}
+
+		proc.parse(args, argFilters)
 
 		processes = append(processes, proc)
 
