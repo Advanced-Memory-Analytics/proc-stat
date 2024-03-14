@@ -19,24 +19,20 @@ type Proc struct {
 	Cmd   string
 	Args  map[string]string
 }
-<<<<<<< HEAD
-0
-func PSEF() ([]*Proc, map[int][]*Proc, error) {
-=======
 
 func PSEF(cmd string, argFilters ...string) ([]*Proc, error) {
->>>>>>> main
 	processes := make([]*Proc, 0)
+	children := make(map[int][]*Proc)
 
+	
 	ps := exec.Command("ps", "-ef")
 	out, err := ps.Output()
 	if err != nil {
-		return nil, nil, fmt.Errorf("Failed to get output of command: %v with error: %v", ps, err)
+		return nil, fmt.Errorf("Failed to get output of command: %v with error: %v", ps, err)
 	}
 
 	lines := strings.Split(string(out), "\n")
 
-	children := make(map[int][]*Proc)
 	for _, process := range lines {
 		if len(process) == 0 {
 			continue
@@ -65,16 +61,15 @@ func PSEF(cmd string, argFilters ...string) ([]*Proc, error) {
 		}
 
 		proc.parse(args, argFilters)
-
-		processes = append(processes, proc)
-
 		children[proc.Ppid] = append(children[proc.Ppid], proc)
+		processes = append(processes, proc)
 	}
 
 	return processes, children, nil
 }
 
-func MonitorPIDChanges(interval time.Duration, stopChan <-chan struct{}){ //chan ensures synchronization
+
+func MonitorPIDChanges(interval time.Duration, stopChan <-chan struct{}, cmd string, argFilters ...string){ //chan ensures synchronization
 	prevProcs := make(map[string]int)
 
     	for {
@@ -83,7 +78,7 @@ func MonitorPIDChanges(interval time.Duration, stopChan <-chan struct{}){ //chan
             		fmt.Println("Stopping process monitoring")
             		return
         	default:
-            		currentProcs, _, err := PSEF()
+            		currentProcs, _, err := PSEF(cmd, argFilters...)
             		if err != nil {
                 		fmt.Printf("Error fetching processes: %v\n", err)
                 		return
