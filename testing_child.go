@@ -5,14 +5,15 @@ import (
 )
 
 func main() {
-          procs, err := proc.PSEF()
+          _, children, err := proc.PSEF()
           if err != nil{
                   fmt.Println("Error:", err)
                   return
           }
-          parentChildMap := proc.FindChildren(procs)
+          //parentChildMap := proc.FindChildren(procs)
 
-        for ppid, children := range parentChildMap {
+	//fmt.Printf("procceses:", procs)
+        for ppid, children := range children {
                 fmt.Printf("Parent PID: %d\n", ppid)
         for _, child := range children {
                 fmt.Printf("\tChild PID: %d, CMD: %s\n", child.Pid, child.Cmd)

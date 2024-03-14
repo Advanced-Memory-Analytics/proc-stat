@@ -1,10 +1,11 @@
-package proc
+package prc
 
 import (
 	"fmt"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Proc struct {
@@ -18,18 +19,19 @@ type Proc struct {
 	Cmd   string
 	Args  map[string]string
 }
-
-func PSEF() ([]*Proc, error) {
+0
+func PSEF() ([]*Proc, map[int][]*Proc, error) {
 	processes := make([]*Proc, 0)
 
 	ps := exec.Command("ps", "-ef")
 	out, err := ps.Output()
 	if err != nil {
-		return nil, fmt.Errorf("Failed to get output of command: %v with error: %v", ps, err)
+		return nil, nil, fmt.Errorf("Failed to get output of command: %v with error: %v", ps, err)
 	}
 
 	lines := strings.Split(string(out), "\n")
 
+	children := make(map[int][]*Proc)
 	for _, process := range lines {
 		if len(process) == 0 {
 			continue
@@ -56,16 +58,51 @@ func PSEF() ([]*Proc, error) {
 		proc.parse(args)
 
 		processes = append(processes, proc)
+
+		children[proc.Ppid] = append(children[proc.Ppid], proc)
 	}
 
-	return processes, nil
+	return processes, children, nil
 }
 
-func FindChildren(procs []*Proc) map[int][]*Proc {
-    children := make(map[int][]*Proc)
-    for _, proc := range procs {
-        // Append the proc to the slice in the map keyed by the parent PID
-        children[proc.Ppid] = append(children[proc.Ppid], proc)
-    }
-    return children
+func MonitorPIDChanges(interval time.Duration, stopChan <-chan struct{}){ //chan ensures synchronization
+	prevProcs := make(map[string]int)
+
+    	for {
+        	select {
+        	case <-stopChan:
+            		fmt.Println("Stopping process monitoring")
+            		return
+        	default:
+            		currentProcs, _, err := PSEF()
+            		if err != nil {
+                		fmt.Printf("Error fetching processes: %v\n", err)
+                		return
+            		}
+
+            		// Use map of command names to PIDs for current processes
+            		currentProcsMap := make(map[string]int)
+            		for _, process := range currentProcs {
+                		currentPID := prevProcs[process.Cmd]
+                		currentProcsMap[process.Cmd] = process.Pid
+
+                		if currentPID == 0 {
+                    			fmt.Printf("New application detected: %s with PID %d\n", process.Cmd, process.Pid)
+            			}else if currentPID != process.Pid{
+                                        fmt.Printf("Application %s changed PID from %d to %d\n", process.Cmd, currentPID, process.Pid)
+                                }
+			}
+
+            // Check for terminated applications
+            		for cmd, pid := range prevProcs {
+                		if _, exists := currentProcsMap[cmd]; !exists {
+                    			fmt.Printf("Application terminated: %s with PID %d\n", cmd, pid)
+				}
+            		}
+
+            // Update prevProcs to reflect the current state
+            		prevProcs = currentProcsMap
+            		time.Sleep(interval)
+        	}
+    	}	
 }
