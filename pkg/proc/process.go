@@ -2,8 +2,8 @@ package proc
 
 import (
 	"fmt"
-    "hash/fnv"
-    "os/exec"
+	"hash/fnv"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -22,8 +22,8 @@ type Proc struct {
 
 func PSEF(cmd string, argFilters ...string) ([]*Proc, uint64, error) {
 	processes := make([]*Proc, 0)
-    checksum := uint64(0)
-    h := fnv.New32a()
+	checksum := uint64(0)
+	h := fnv.New32a()
 
 	ps := exec.Command("ps", "-ef")
 	out, err := ps.Output()
@@ -64,8 +64,8 @@ func PSEF(cmd string, argFilters ...string) ([]*Proc, uint64, error) {
 
 		processes = append(processes, proc)
 
-        h.Write([]byte(cols[1]+proc.Stime))
-        checksum += uint64(h.Sum32())
+		h.Write([]byte(cols[1] + proc.Stime))
+		checksum += uint64(h.Sum32())
 	}
 
 	return processes, checksum, nil
