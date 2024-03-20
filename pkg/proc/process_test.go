@@ -10,7 +10,7 @@ import (
 )
 
 func TestPSEF(test *testing.T) {
-	procs, err := PSEF("")
+	procs, _, err := PSEF("")
 	if err != nil {
 		test.Fatal(err)
 	}
@@ -40,7 +40,7 @@ func TestPSEFWithNameFlag(test *testing.T) {
 	defer cmd1.Wait()
 	defer cmd2.Wait()
 
-	procs, err := PSEF("")
+	procs, _, err := PSEF("")
 	if err != nil {
 		test.Fatal(err)
 	}
@@ -103,7 +103,7 @@ func TestPSEFWithFilter(test *testing.T) {
 	defer cmd1.Wait()
 	defer cmd2.Wait()
 
-	procs, err := PSEF("bash", "name", "uuid", "test.sh")
+	procs, _, err := PSEF("bash", "name", "uuid", "test.sh")
 	if err != nil {
 		test.Fatal(err)
 	}
@@ -140,4 +140,44 @@ func TestPSEFWithFilter(test *testing.T) {
 			}
 		}
 	}
+}
+
+func TestChecksum(test *testing.T) {
+    testDir := _test.GetTestDir()
+    cmd1 := exec.Command("/bin/bash", testDir+"/tester.sh", "-uuid b329c3cb-872b-4762-a2b9-ba0d401907d6 -name guest=b329c3cb-872b-4762-a2b9-ba0d401907d6,debug-threads=on -junk -moreJunk thisshouldnotshowup")
+    cmd2 := exec.Command("/bin/bash", testDir+"/tester.sh", "-name test2 -junk -moreJunk thisshouldnotshowup")
+    cmd3 := exec.Command("/bin/bash", testDir+"/tester.sh", "-uuid b329c3cb-872b-4762-a2b9-ba0d401907d6 -name guest=b329c3cb-872b-4762-a2b9-ba0d401907d6,debug-threads=on -junk -moreJunk thisshouldnotshowup")
+
+    cmd1.Start()
+    cmd2.Start()
+
+    _, checksum1, err := PSEF("bash")
+    if err != nil {
+        test.Fatal(err)
+    }
+
+    _, checksum2, err := PSEF("bash")
+    if err != nil {
+        test.Fatal(err)
+    }
+
+    if checksum1 != checksum2 {
+        test.Errorf("Checksums not equal when should be:  %d, %d", checksum1, checksum2)
+    }
+
+    cmd1.Process.Kill()
+
+    _, checksum3, err := PSEF("bash", "name")
+    if checksum1 == checksum3 {
+        test.Errorf("Checksums are equal when shouldn't be: %d, %d", checksum1, checksum3)
+    }
+
+    cmd3.Start()
+
+    _, checksum4, err := PSEF("bash", "name")
+    if checksum1 == checksum4 {
+        test.Errorf("Checksums are equal when shouldn't be: %d, %d", checksum1, checksum3)
+    }
+
+
 }

@@ -29,3 +29,8 @@ For boolean flags, if the flag is present, the key for that flag is associated w
 The key "runAsUser" in the example above, the value will be "true" since it is present.  Using Go maps, 
 you can also easily determine if an argument was supplied by simply checking the second return type of 
 the map, which is a boolean value.  See here: https://go.dev/blog/maps.
+
+Checksums are produced for each run of the `PSEF` function. This can be used to differentiate two runs of the
+command.  If you compare the checksums of one run to another run and they are different, you can be certain
+that the processes returned by each of these two calls to `PSEF` are different in some way.  This is useful if you are
+monitoring processes and want to know if something changed since the last time you ran `PSEF`. 
